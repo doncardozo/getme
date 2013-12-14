@@ -36,7 +36,8 @@ and open the template in the editor.
                             $.unblockUI(); 
                         },
                         success: function(data) {                                  
-                            $("#resp").html(data);                                       
+                            $("#resp").html(data);  
+                            $("#d").focus();
                             return false;                            
                         }                    
                     });
