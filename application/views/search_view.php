@@ -37,7 +37,7 @@ and open the template in the editor.
                         },
                         success: function(data) {                                  
                             $("#resp").html(data);  
-                            $("#d").focus();
+                            $("#d").focus(); //Poner foco en "search text"
                             return false;                            
                         }                    
                     });
