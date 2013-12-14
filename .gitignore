@@ -1,0 +1,10 @@
+*~
+*.dat
+index.php
+list.txt
+nbproject
+project_data
+project_data/*
+files/*
+application/config/database.php
+application/config/config.php
