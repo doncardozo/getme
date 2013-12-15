@@ -15,15 +15,69 @@ class main extends CI_Controller {
 
         try {
 
-            $d = $this->security->xss_clean($this->input->post("d"));
+            $d = $this->security->xss_clean($this->input->post("d"));            
 
             if ($d == '')
                 throw new Exception("Insert a word!");
 
-            echo $this->finder->find($d);            
-            
+            $resp = $this->finder->find($d);
+
+            if ($resp['total'] == 0) {
+                echo json_encode(
+                        array(
+                            "total" => $resp['total'],
+                            "total_cur" => $resp['total'],
+                            "resp" => json_encode($resp['data'])
+                        )
+                );
+            } else {
+                
+                $total_max = 3000;
+                
+                if ($resp['total'] <= $total_max) {
+                    echo json_encode(
+                            array(
+                                "total" => $resp['total'],
+                                "total_cur" => $resp['total'],
+                                "resp" => json_encode($resp['data'])
+                            )
+                    );
+                } else {
+                    
+                    $tmp_dir = "/var/www/getme/files/tmp";
+                    $cant_files = ceil($resp['total']/$total_max);
+                    $cant_regs = $resp['total'];
+                    $aux = null;
+
+                    for ($i = 0; $i < $cant_files; $i++) {
+                                                
+                        $aux = array_splice($resp['data'], -$total_max);                        
+                        $file = "$tmp_dir/{$resp['key']}_$i";
+                        file_put_contents($file, json_encode($aux));
+                        $aux = null;   
+                        
+                    }
+                    
+                    $file_data = file_get_contents($file = "$tmp_dir/{$resp['key']}_0");
+
+                    echo json_encode(
+                            array(
+                                "total" => $resp['total'],
+                                "total_cur" => $total_max,
+                                "resp" => $file_data
+                            )
+                    );
+                }
+            }
         } catch (Exception $ex) {
-            echo $ex->getMessage();
+
+            echo json_encode(
+                    array(
+                        "total" => 0, 
+                        "total_cur" => 0,
+                        "resp" => array($ex->getMessage())
+                    )
+            );
         }
     }
 

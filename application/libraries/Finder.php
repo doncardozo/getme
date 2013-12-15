@@ -70,6 +70,12 @@ class Finder {
             );
         }
     }
+    
+    private function getCount($data){
+        $command = "clear; cd " . get_gmf() . "; cat hdisk.data | grep $data | wc -l;";
+        exec($command, $out);        
+        return $out[0];
+    }
 
     /**
      * Short description of method search
@@ -80,9 +86,18 @@ class Finder {
      * @return string
      */
     public function find($data) {
-        $command = "clear; cd " . get_gmf() . "; cat hdisk.data | grep $data;";
-        system($command, $out);
-        return $out[0];        
+        
+        $total = $this->getCount($data);
+        
+        if($total == 0){
+            return array("total" => $total, "key"=>"", "data" => "");
+        }
+        else {
+            $command = "clear; cd " . get_gmf() . "; cat hdisk.data | grep $data;";
+            exec($command, $out);        
+            
+            return array("total" => $total, "key"=> md5($data), "data" => $out);
+        }
     }
 
     /**

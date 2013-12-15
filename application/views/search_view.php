@@ -14,13 +14,17 @@ and open the template in the editor.
         <script type="text/javascript">
             $(function() {
                 
-                $("#d").focus();
+                var resp = $("#resp");
+                var d = $("#d");                
+                d.focus();
                 
                 $(document).on("click", "#search", function() {
+                    
                     $.ajax({
                         type: 'post',
                         url: 'http://getme/index.php/main/s',
-                        data: $("form").serialize(),                        
+                        data: $("form").serialize(),   
+                        dataType: 'json',
                         beforeSend:function(){
                             $.blockUI({
                                message:"<input type='image' src='../../media/img/loader.gif' />",
@@ -35,14 +39,26 @@ and open the template in the editor.
                         complete:function(){
                             $.unblockUI(); 
                         },
-                        success: function(data) {                                  
-                            $("#resp").html(data);  
-                            $("#d").focus(); //Poner foco en "search text"
-                            return false;                            
-                        }                    
+                        success: function(data) {  
+                           if(data.total !== '' && data.total_cur !== ''){
+                               resp.html("Total: "+data.total+" | Per Page: "+data.total_cur+"<br />");
+                           }
+                           else {
+                               resp.html("Total: "+data.total+"<br />");
+                           }   
+                           inner(resp, $.parseJSON(data.resp));    
+                           d.focus(); //Poner foco en "search text"
+                           return false;                            
+                       }                    
                     });
                     return false;
                 });
+                
+                function inner(o, d){
+                    $.each(d, function(i, val){
+                        o.append(val+"<br/>");
+                    }); 
+                }
             });
         </script>
         <style type="text/css">      
