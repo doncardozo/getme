@@ -61,7 +61,7 @@ class main extends CI_Controller {
                     $aux = null;
                     $this->session->set_userdata("keyword", $resp['key']);
                     $this->session->set_userdata("total_regs", $resp['total']);
-                    $this->session->set_userdata("cant_files", ($cant_files-1));
+                    $this->session->set_userdata("cant_files", $cant_files);
 
                     for ($i = 0; $i < $cant_files; $i++) {
                         $aux = array_splice($resp['data'], -$total_max);
@@ -79,7 +79,7 @@ class main extends CI_Controller {
                                         base_url() . "index.php/main/spage/p", 
                                         $resp['total'], 
                                         $total_max,
-                                        $cant_files
+                                        ($cant_files-1)
                                 ),
                                 "resp" => $file_data
                             )
@@ -101,12 +101,7 @@ class main extends CI_Controller {
     private function remove_old_serch() {
 
         if ($this->session->userdata("keyword")) {
-            for ($i = 0; $i <= $this->session->userdata("cant_files"); $i++) {
-                $filename = "{$this->tmp_dir}/{$this->session->userdata("keyword")}_$i";
-                unlink($filename);
-            }
-
-            $this->session->sess_destroy();            
+            $this->remove_all_old_files();     
         }
         
     }
@@ -143,7 +138,7 @@ class main extends CI_Controller {
                             base_url() . "index.php/main/spage/p", 
                             $total_regs, 
                             $total_per_page,
-                            $cant_files
+                            ($cant_files-1)
                     ),
                     "resp" => $file_data
                 )

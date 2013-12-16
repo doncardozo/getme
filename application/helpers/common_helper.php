@@ -65,7 +65,7 @@ if (!function_exists("build_pagination")) {
         $config['first_link'] = "";
         $config['next_link'] = "";
         $config['prev_link'] = "";
-        $config['last_link'] = "";
+        $config['last_link'] = "";      
         $config['full_tag_open'] = "<div class='pagination'>";
         $config['full_tag_close'] = "</div>";
         
