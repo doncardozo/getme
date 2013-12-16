@@ -26,15 +26,7 @@ and open the template in the editor.
                         data: $("form").serialize(),   
                         dataType: 'json',
                         beforeSend:function(){
-                            $.blockUI({
-                               message:"<input type='image' src='../../media/img/loader.gif' />",
-                               css:{
-                                   border:'none',
-                                   width:'124px',
-                                   height:'128px',
-                                   left:'45%'
-                               }
-                            });   
+                            show_preload();   
                         },
                         complete:function(){
                             $.unblockUI(); 
@@ -57,6 +49,12 @@ and open the template in the editor.
                         url:$(this).attr("href"),
                         data:'page='+($(this).text()-1),
                         dataType: 'json',
+                        beforeSend: function(){
+                            show_preload();   
+                        },
+                        complete:function(){
+                            $.unblockUI(); 
+                        },
                         success:function(data){
                             resp.html(data.total_msg);
                             resp.append("<br />"+data.pag+"<br />");
@@ -66,7 +64,19 @@ and open the template in the editor.
                         }
                     });
                     return false;
-                });                
+                });        
+                
+                function show_preload(){
+                    $.blockUI({
+                       message:"<input type='image' src='../../media/img/loader.gif' />",
+                       css:{
+                           border:'none',
+                           width:'124px',
+                           height:'128px',
+                           left:'45%'
+                       }
+                    });                    
+                }
                 
                 function inner(o, d){
                     $.each(d, function(i, val){

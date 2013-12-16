@@ -10,6 +10,7 @@ class main extends CI_Controller {
     }
 
     private function index() {
+        $this->remove_all_old_files();
         $data['include_view'] = $this->load->view("include_view", null, true);
         $this->load->view("search_view", $data);
     }
@@ -100,17 +101,23 @@ class main extends CI_Controller {
     private function remove_old_serch() {
 
         if ($this->session->userdata("keyword")) {
-            for ($i = 0; $i < $this->session->userdata("cant_files"); $i++) {
+            for ($i = 0; $i <= $this->session->userdata("cant_files"); $i++) {
                 $filename = "{$this->tmp_dir}/{$this->session->userdata("keyword")}_$i";
                 unlink($filename);
             }
 
-            $this->session->unset_userdata("keyword");
-            $this->session->unset_userdata("cant_files");
-            $this->session->unset_userdata("total_regs");
-            $this->session->unset_userdata("cant_files");
+            $this->session->sess_destroy();            
         }
         
+    }
+    
+    private function remove_all_old_files(){
+        $files = glob("{$this->tmp_dir}/*");
+        foreach($files as $file){
+          if(is_file($file))
+            unlink($file);
+        }
+        $this->session->sess_destroy();
     }
 
     private function show_page() {
@@ -172,10 +179,7 @@ class main extends CI_Controller {
     }
 
     public function _remap($method) {
-        switch ($method) {
-            case 'index' :
-                $this->index();
-                break;
+        switch ($method) {            
             case 's' :
                 $this->search();
                 break;
@@ -193,6 +197,9 @@ class main extends CI_Controller {
                 break;
             case 'spage' :
                 $this->show_page();
+                break;
+            case 'index' :
+                $this->index();
                 break;
         }
     }
