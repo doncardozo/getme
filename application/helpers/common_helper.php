@@ -53,3 +53,27 @@ if (!function_exists("resp_json")) {
     }
 
 }
+
+if (!function_exists("build_pagination")) {
+
+    function build_pagination($url, $total_rows, $per_page, $cant_pages) {
+        
+        $config['base_url'] = $url;
+        $config['total_rows'] = $total_rows;
+        $config['per_page'] = $per_page;
+        $config['num_links'] = $cant_pages;
+        $config['first_link'] = "";
+        $config['next_link'] = "";
+        $config['prev_link'] = "";
+        $config['last_link'] = "";
+        $config['full_tag_open'] = "<div class='pagination'>";
+        $config['full_tag_close'] = "</div>";
+        
+        $ci =& get_instance();
+        $ci->pagination->initialize($config);
+
+        return $ci->pagination->create_links();
+
+    }
+
+}

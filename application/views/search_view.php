@@ -39,20 +39,34 @@ and open the template in the editor.
                         complete:function(){
                             $.unblockUI(); 
                         },
-                        success: function(data) {  
-                           if(data.total !== '' && data.total_cur !== ''){
-                               resp.html("Total: "+data.total+" | Per Page: "+data.total_cur+"<br />");
-                           }
-                           else {
-                               resp.html("Total: "+data.total+"<br />");
-                           }   
-                           inner(resp, $.parseJSON(data.resp));    
+                        success: function(data) {                             
+                           resp.html(data.total_msg);
+                           resp.append("<br />"+data.pag+"<br />");
+                           inner(resp, $.parseJSON(data.resp));                           
+                           resp.append("<br />"+data.pag+"<br />");
                            d.focus(); //Poner foco en "search text"
                            return false;                            
                        }                    
                     });
                     return false;
                 });
+                
+                $(document).on("click", "div.pagination a", function(){                    
+                    $.ajax({
+                        type:'post',
+                        url:$(this).attr("href"),
+                        data:'page='+($(this).text()-1),
+                        dataType: 'json',
+                        success:function(data){
+                            resp.html(data.total_msg);
+                            resp.append("<br />"+data.pag+"<br />");
+                            inner(resp, $.parseJSON(data.resp));                           
+                            resp.append("<br />"+data.pag+"<br />");
+                            return false;
+                        }
+                    });
+                    return false;
+                });                
                 
                 function inner(o, d){
                     $.each(d, function(i, val){

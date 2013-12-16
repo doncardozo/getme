@@ -58,6 +58,7 @@ $autoload['packages'] = array();
 $autoload['libraries'] = array(
     'database',
     'session',
+    'pagination',
     'DataManager',
     'SSH2',
     'Finder'
