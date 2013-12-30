@@ -3,10 +3,12 @@
 class main extends CI_Controller {
 
     private $tmp_dir = null;
+    private $url;
 
     public function __construct() {
         parent::__construct();
         $this->tmp_dir = get_gmf() . "/tmp";
+        $this->url = base_url() . "index.php/main/spage/p";
     }
 
     private function index() {
@@ -34,115 +36,113 @@ class main extends CI_Controller {
             $resp = $this->finder->find($d);
 
             if ($resp['total'] == 0) {
-                echo json_encode(
-                        array(
-                            "total_msg" => "Total: {$resp['total']}",
-                            "pag" => "",
-                            "resp" => json_encode(array())
-                        )
-                );
+                
+                $this->responseJSON( "Total: {$resp['total']}", "", json_encode(array()) );
+                
             } else {
 
                 $total_max = 3000;
 
                 if ($resp['total'] <= $total_max) {
-                    echo json_encode(
-                            array(
-                                "total_msg" => "Total: {$resp['total']} | Per page: {$resp['total']}<br />",
-                                "pag" => "",
-                                "resp" => json_encode($resp['data'])
-                            )
+                    
+                    $this->responseJSON( 
+                            "Total: {$resp['total']} | Per page: {$resp['total']}<br />",
+                            "",
+                            json_encode($resp['data'])
                     );
+                    
                 } else {
-
-                    $tmp_dir = "/var/www/getme/files/tmp";
+                    
                     $cant_files = ceil($resp['total'] / $total_max);
                     $cant_regs = $resp['total'];
                     $aux = null;
                     $this->session->set_userdata("keyword", $resp['key']);
                     $this->session->set_userdata("total_regs", $resp['total']);
                     $this->session->set_userdata("cant_files", $cant_files);
+                    $this->session->set_userdata("per_page", $total_max);
+                    $first_page = 0;
 
-                    for ($i = 0; $i < $cant_files; $i++) {
+                    for ($i = $first_page; $i < $cant_files; $i++) {
                         $aux = array_splice($resp['data'], -$total_max);
-                        $file = "$tmp_dir/{$resp['key']}_$i";
+                        $file = "{$this->tmp_dir}/{$resp['key']}_$i";
                         file_put_contents($file, json_encode($aux));
                         $aux = null;
                     }
 
-                    $file_data = file_get_contents($file = "$tmp_dir/{$resp['key']}_0");
+                    $file_data = file_get_contents("{$this->tmp_dir}/{$resp['key']}_{$first_page}");
 
-                    echo json_encode(
-                            array(
-                                "total_msg" => "Total: {$resp['total']} | Per page: $total_max<br />",
-                                "pag" => build_pagination(
-                                        base_url() . "index.php/main/spage/p", 
-                                        $resp['total'], 
-                                        $total_max,
-                                        ($cant_files-1)
-                                ),
-                                "resp" => $file_data
-                            )
+                    $this->responseJSON(
+                            "Total: {$resp['total']} | Per page: $total_max<br />", 
+                             build_pagination($this->url, $resp['total'], $total_max, $cant_files, $first_page), 
+                             $file_data
                     );
                 }
             }
         } catch (Exception $ex) {
-
-            echo json_encode(
-                    array(
-                        "total_msg" => "",
-                        "pag" => "",
-                        "resp" => json_encode(array($ex->getMessage()))
-                    )
-            );
+            $this->responseJSON('', '', json_encode(array($ex->getMessage())));
         }
+    }
+
+    private function responseJSON($msg = '', $pag = '', $resp = '') {
+        echo json_encode(
+                array(
+                    "total_msg" => $msg,
+                    "pag" => $pag,
+                    "resp" => $resp
+                )
+        );
     }
 
     private function remove_old_serch() {
 
         if ($this->session->userdata("keyword")) {
-            $this->remove_all_old_files();     
+            $this->remove_all_old_files();
         }
-        
     }
-    
-    private function remove_all_old_files(){
+
+    private function remove_all_old_files() {
         $files = glob("{$this->tmp_dir}/*");
-        foreach($files as $file){
-          if(is_file($file))
-            unlink($file);
+        foreach ($files as $file) {
+            if (is_file($file))
+                unlink($file);
         }
         $this->session->sess_destroy();
     }
 
     private function show_page() {
-
+        
         $page = $this->input->post("page");
+        #$keyword = $this->session->userdata("keyword");
+        #$total_regs = $this->session->userdata("total_regs");
+        #$cant_files = $this->session->userdata("cant_files");
+        #$per_page = $this->session->userdata("per_page");
 
-        if (!$page) {
+        $sess_data = $this->session->all_userdata();
+        
+        if (empty($page) || $page == '<<') {
             $page = 0;
+        } elseif ($page == '>>') {
+            $page = --$sess_data['cant_files'];
+        } else {
+            $page--;
         }
 
-        $keyword = $this->session->userdata("keyword");
-        $total_regs = $this->session->userdata("total_regs");
-        $cant_files = $this->session->userdata("cant_files");
-
-        $file_data = file_get_contents($file = "{$this->tmp_dir}/{$keyword}_{$page}");
+        $file_data = file_get_contents("{$this->tmp_dir}/{$sess_data['keyword']}_{$page}");
 
         $total_per_page = sizeof(json_decode($file_data));
 
-        echo json_encode(
-                array(
-                    "total_msg" => "Total: {$total_regs} | Per page: {$total_per_page}<br />",
-                    "pag" => build_pagination(
-                            base_url() . "index.php/main/spage/p", 
-                            $total_regs, 
-                            $total_per_page,
-                            ($cant_files-1)
-                    ),
-                    "resp" => $file_data
-                )
+        $this->responseJSON(
+                "Total: {$sess_data['total_regs']} | Per page: {$total_per_page}<br />",
+                build_pagination( 
+                        $this->url, 
+                        $sess_data['total_regs'], 
+                        $sess_data['per_page'], 
+                        $sess_data['cant_files'], 
+                        $page 
+               ),
+                $file_data
         );
+        
     }
 
     private function search_cli($data) {
@@ -174,7 +174,7 @@ class main extends CI_Controller {
     }
 
     public function _remap($method) {
-        switch ($method) {            
+        switch ($method) {
             case 's' :
                 $this->search();
                 break;

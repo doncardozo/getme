@@ -47,7 +47,7 @@ and open the template in the editor.
                     $.ajax({
                         type:'post',
                         url:$(this).attr("href"),
-                        data:'page='+($(this).text()-1),
+                        data:'page='+($(this).text()),
                         dataType: 'json',
                         beforeSend: function(){
                             show_preload();   
