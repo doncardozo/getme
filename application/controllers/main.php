@@ -56,10 +56,18 @@ class main extends CI_Controller {
                     $cant_files = ceil($resp['total'] / $total_max);
                     $cant_regs = $resp['total'];
                     $aux = null;
-                    $this->session->set_userdata("keyword", $resp['key']);
-                    $this->session->set_userdata("total_regs", $resp['total']);
-                    $this->session->set_userdata("cant_files", $cant_files);
-                    $this->session->set_userdata("per_page", $total_max);
+                    
+                    # Save session data
+                    $this->session->sess_create();
+                    $this->session->set_userdata(
+                            array(
+                                "keyword" => trim($resp['key']),
+                                "total_regs" => trim($resp['total']),
+                                "cant_files" => $cant_files,
+                                "per_page" => $total_max
+                            )
+                    );
+                    
                     $first_page = 0;
 
                     for ($i = $first_page; $i < $cant_files; $i++) {
@@ -112,10 +120,6 @@ class main extends CI_Controller {
     private function show_page() {
         
         $page = $this->input->post("page");
-        #$keyword = $this->session->userdata("keyword");
-        #$total_regs = $this->session->userdata("total_regs");
-        #$cant_files = $this->session->userdata("cant_files");
-        #$per_page = $this->session->userdata("per_page");
 
         $sess_data = $this->session->all_userdata();
         
@@ -128,6 +132,13 @@ class main extends CI_Controller {
         }
 
         $file_data = file_get_contents("{$this->tmp_dir}/{$sess_data['keyword']}_{$page}");
+        
+        # File not found.
+        if(empty($file_data)){
+            $this->responseJSON('', '', json_encode(array("Search again, please.")));
+            $this->remove_old_serch();
+            exit();
+        }
 
         $total_per_page = sizeof(json_decode($file_data));
 
