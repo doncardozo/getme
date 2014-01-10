@@ -189,9 +189,6 @@ class main extends CI_Controller {
             case 's' :
                 $this->search();
                 break;
-            case 'scli' :
-                $this->search_cli($_SERVER['argv'][3]);
-                break;
             case 'upd' :
                 $this->update();
                 break;

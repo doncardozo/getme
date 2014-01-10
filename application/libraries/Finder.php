@@ -54,7 +54,7 @@ class Finder {
             if ($this->ci->ssh2->connect($this->_udat[0], $this->_udat[1]) !== true)
                 throw new Exception("I can't connect!");
 
-            $command = "clear; cd " . get_gmf() . "; cat hdisk.data | grep $data;";
+            $command = "egrep $data " . get_gmf() . "/hdisk.data;";
 
             if ($this->ci->ssh2->exec($command) !== true)
                 throw new Exception("I don't search!");
@@ -72,8 +72,8 @@ class Finder {
     }
     
     private function getCount($data){
-        $command = "clear; cd " . get_gmf() . "; cat hdisk.data | grep $data | wc -l;";
-        exec($command, $out);        
+        $command = "egrep $data " . get_gmf() . "/hdisk.data | wc -l";
+        exec($command, $out);             
         return $out[0];
     }
 
@@ -93,21 +93,11 @@ class Finder {
             return array("total" => $total, "key"=>"", "data" => "");
         }
         else {
-            $command = "clear; cd " . get_gmf() . "; cat hdisk.data | grep $data;";
+            $command = "egrep $data " . get_gmf() . "/hdisk.data";
             exec($command, $out);        
             
             return array("total" => $total, "key"=> md5($data), "data" => $out);
         }
-    }
-
-    /**
-     * Method search_cli
-     * @param type $data
-     */
-    public function search_cli($data) {
-        $cmd = "clear; cd " . get_gmf() . "; cat hdisk.data | grep $data;";
-        system($cmd, $output);
-        print $output[0];
     }
 
     /**
