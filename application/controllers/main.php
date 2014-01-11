@@ -25,7 +25,10 @@ class main extends CI_Controller {
 
             if ($d == '')
                 throw new Exception("Insert a word!");
-
+            
+            $d = addslashes($d);
+            $d = preg_replace('/([?#^&*(){}\[\]=\+\-\|\<\>\!\.$\\/])/', '\\\\$1', $d);
+              
             if ($this->session->userdata('keyword') === md5($d)) {
                 $this->show_page();
                 return;
