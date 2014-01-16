@@ -27,8 +27,8 @@ class main extends CI_Controller {
                 throw new Exception("Insert a word!");
             
             $d = escapeshellcmd($d);
-
-            if ($this->session->userdata('keyword') === md5($d)) {
+            
+            if ($this->session->userdata('keyword') === md5($d)) {                
                 $this->show_page();
                 return;
             } else {
