@@ -1,9 +1,4 @@
 <!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
 <html>
     <head>
         <meta charset="UTF-8">
@@ -31,14 +26,9 @@ and open the template in the editor.
                         complete:function(){
                             $.unblockUI(); 
                         },
-                        success: function(data) {                             
-                           resp.html(data.total_msg);
-                           resp.append("<br />"+data.pag+"<br />");
-                           inner(resp, $.parseJSON(data.resp));                           
-                           resp.append("<br />"+data.pag+"<br />");
-                           d.focus(); //Poner foco en "search text"
-                           return false;                            
-                       }                    
+                        success: function(data){
+                            insertData(data)
+                        }
                     });
                     return false;
                 });
@@ -55,16 +45,21 @@ and open the template in the editor.
                         complete:function(){
                             $.unblockUI(); 
                         },
-                        success:function(data){
-                            resp.html(data.total_msg);
-                            resp.append("<br />"+data.pag+"<br />");
-                            inner(resp, $.parseJSON(data.resp));                           
-                            resp.append("<br />"+data.pag+"<br />");
-                            return false;
+                        success: function(data){
+                            insertData(data)
                         }
                     });
                     return false;
                 });        
+                
+                function insertData(data){
+                    resp.html("<span id='totmsg'>"+data.total_msg+"</span>");
+                    resp.append(data.pag+"<br />");
+                    inner(resp, $.parseJSON(data.resp));                           
+                    resp.append("<br />"+data.pag);  
+                    d.focus();
+                    return false;
+                }
                 
                 function show_preload(){
                     $.blockUI({
@@ -90,6 +85,7 @@ and open the template in the editor.
         </script>
         <style type="text/css">      
             #u, #p { width:200px; }
+            #totmsg { font-size: 13px; font-weight: bold; }
             #d { width: 500px;}
             pre #resp { 
                 font-size: 10px; 
