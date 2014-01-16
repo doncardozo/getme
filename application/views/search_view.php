@@ -68,11 +68,14 @@ and open the template in the editor.
                 
                 function show_preload(){
                     $.blockUI({
-                       message:"<input type='image' src='../../media/img/loader.gif' />",
+                       //message:"<input type='image' src='../../media/img/loader.gif' />",
+                       message: "<strong>Searching...</strong>",
                        css:{
-                           border:'none',
+                           border:'none',   
+                           background: '#2871B0',
+                           color: '#fff',
                            width:'124px',
-                           height:'128px',
+                           //height:'128px',
                            left:'45%'
                        }
                     });                    
@@ -82,7 +85,7 @@ and open the template in the editor.
                     $.each(d, function(i, val){
                         o.append(val+"<br/>");
                     }); 
-                }
+                }                                
             });
         </script>
         <style type="text/css">      
