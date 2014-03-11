@@ -86,7 +86,7 @@
         <style type="text/css">      
             #u, #p { width:200px; }
             #totmsg { font-size: 13px; font-weight: bold; }
-            #d { width: 800px;}
+            #d { width: 500px;}
             pre #resp { 
                 font-size: 10px; 
             }
@@ -98,21 +98,32 @@
     </head>
     <body>                
 
-        <div class="col col-lg-12" style="margin-top: 8px;">
-            <form action="" name="search" class="well" method="post" autocomplete="off">           
-                <fieldset class="form-inline">               
-                    <input type="text" id="d" name="d" placeholder="Insert a word" class="form-control" />
-                    <button id="search" class="btn btn-primary" >Search</button>
-                </fieldset>
-            </form>
-        </div>
+        <div class="container">
 
-        <div class="col col-lg-12">
-            <fieldset>                                
-                <legend>Result</legend>
-                <pre><div id="resp"></div></pre>
-            </fieldset>
-        </div>        
+            <header class="clearfix">
+
+                <div class="navbar">  
+
+                    <form class="form-inline" role="search" name="search" autocomplete="off">
+                        <fieldset>
+                            <legend>Search</legend>
+                            <input type="text" id="d" name="d" class="form-control" placeholder="Insert a word or regular expression">
+                            <button type="submit" id="search" class="btn btn-primary">Search</button>
+                        </fieldset>
+                    </form>
+
+                </div>
+
+            </header>
+
+            <secion>                
+                <fieldset>
+                    <legend>Result</legend>
+                    <pre><div id="resp"></div></pre>
+                </fieldset>                
+            </secion>
             
+        </div>
+        
     </body>
 </html>
