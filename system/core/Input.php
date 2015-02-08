@@ -347,8 +347,8 @@ class CI_Input {
 				? $spoof : $_SERVER['REMOTE_ADDR'];
 		}
 		else
-		{
-			$this->ip_address = $_SERVER['REMOTE_ADDR'];
+		{                    
+			$this->ip_address = $this->server('REMOTE_ADDR'); 
 		}
 
 		if ( ! $this->valid_ip($this->ip_address))
