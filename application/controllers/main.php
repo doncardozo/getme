@@ -8,7 +8,7 @@ class main extends CI_Controller {
     public function __construct() {
         parent::__construct();
         $this->tmp_dir = get_gmf() . "/tmp";
-        $this->url = base_url() . "index.php/main/spage/p";
+        $this->url = "main/spage/p";
     }
 
     private function index() {
