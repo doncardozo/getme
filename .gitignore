@@ -1,10 +1,11 @@
 *~
-*.dat
+*.data
+*/index.html
 index.php
 list.txt
 nbproject
 project_data
 project_data/*
-files/*
+files/tmp/*
 application/config/database.php
 application/config/config.php
