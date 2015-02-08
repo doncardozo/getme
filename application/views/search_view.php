@@ -9,6 +9,7 @@
         <script type="text/javascript">
             $(function() {
 
+                var b_url = '<?php echo base_url() ?>';
                 var resp = $("#resp");
                 var d = $("#d");
                 d.focus();
@@ -17,7 +18,7 @@
 
                     $.ajax({
                         type: 'post',
-                        url: 'http://getme/index.php/main/s',
+                        url: 'http://' + b_url + 'main/s',
                         data: $("form").serialize(),
                         dataType: 'json',
                         beforeSend: function() {
