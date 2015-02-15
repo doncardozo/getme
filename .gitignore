@@ -1,5 +1,6 @@
 *~
 *.data
+*.bkp
 */index.html
 index.php
 list.txt
