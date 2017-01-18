@@ -4,6 +4,7 @@
 */index.html
 index.php
 list.txt
+*.tar.gz
 nbproject
 project_data
 project_data/*

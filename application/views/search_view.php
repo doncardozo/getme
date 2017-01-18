@@ -95,6 +95,7 @@
                 width:50px;
                 float:right;
             }
+            .pagination a {font-size:15px;}
         </style>
     </head>
     <body>                
