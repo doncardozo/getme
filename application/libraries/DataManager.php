@@ -52,7 +52,7 @@ class DataManager {
      * Method update_cli
      */
     public function update_cli() {
-        $cmd = "cd /var/www/getme; sudo php index.php dm read > " . get_gmf() . "/hdisk.data;";
+        $cmd = "cd /var/www/getme; sudo php index.php cli read > " . get_gmf() . "/hdisk.data;";
         system($cmd);
     }
 

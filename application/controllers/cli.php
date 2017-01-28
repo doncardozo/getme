@@ -1,6 +1,6 @@
 <?php
 
-class dm extends CI_Controller {     
+class cli extends CI_Controller {     
 
     public function read() {
         
@@ -17,7 +17,7 @@ class dm extends CI_Controller {
         
     }
 
-    function ucli() {
+    function update() {
 
         try {
 
